@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import ProgressiveImage from 'react-progressive-image';
+import LazyImage from 'lazy-react-blur';
 
 const SimpleProductComponent = ({product,quantity,currency,increaseQunatity,decreaseQuantity,deleteItem}) => {
     const stockUrl = `https://media.tenor.com/lUIQnRFbpscAAAAi/loading.gif`;
@@ -8,16 +8,19 @@ const SimpleProductComponent = ({product,quantity,currency,increaseQunatity,decr
     return (
         <div className='flex w-full rounded-md items-center px-4 py-3 shadow-lg'>
             <div className="aspect-[3/2] max-w-32 max-h-32 overflow-hidden rounded-lg">
-                <ProgressiveImage src={product.image} placeholder={stockUrl}>
-                    {(src) => (
+                <LazyImage
+                    placeholder={stockUrl}
+                    uri={product.image}
+                    render={(src)=>
                         <img
                             src={src}
                             alt={product.title}
                             className="w-full h-full object-cover object-center"
                             style={{ transition: 'filter 0.3s ease-in-out' }}
                         />
-                    )}
-                </ProgressiveImage>
+                    }
+                />
+
             </div>
 
             <div className='w-full flex flex-col shadow-sm px-1 py-2 '>

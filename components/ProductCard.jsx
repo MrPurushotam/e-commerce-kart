@@ -1,8 +1,7 @@
 "use client";
-
+import LazyImage from 'lazy-react-blur'
 import React, { useState } from 'react';
 import Button from "./button";
-import ProgressiveImage from "react-progressive-image";
 import { useRecoilState } from 'recoil';
 import { cartState, currencyList, currencyState } from '@/states/state';
 
@@ -32,16 +31,18 @@ const ProductCard = ({ product }) => {
     return (
         <div className='border-2 border-black p-2 rounded-md space-y-2'>
             <div className="aspect-[3/2] w-full overflow-hidden rounded-lg">
-                <ProgressiveImage src={product.image} placeholder={stockUrl}>
-                    {(src) => (
+                <LazyImage
+                    placeholder={stockUrl}
+                    uri={product.image}
+                    render={(src)=>
                         <img
                             src={src}
                             alt={product.title}
                             className="w-full h-full object-cover object-center"
                             style={{ transition: 'filter 0.3s ease-in-out' }}
                         />
-                    )}
-                </ProgressiveImage>
+                    }
+                />
             </div>
             <div className='flex justify-between items-center p-1'>
                 <h2 className='text-xl font-semibold truncate flex-1'>{product.title}</h2>
