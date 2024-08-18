@@ -2,19 +2,24 @@
 import { useRouter } from "next/navigation"
 import Button from "./button"
 import { useRecoilState } from "recoil";
-import { cartState } from "@/states/state";
+import { cartState, currencyState } from "@/states/state";
 import { useEffect, useRef } from "react";
 
 const Navbar = () => {
   const router= useRouter()
   const [cart,setCart]=useRecoilState(cartState)
+  const [currency,setCurrency]=useRecoilState(currencyState)
   const isInitialMount = useRef(true);
 
   useEffect(() => {
     if (isInitialMount.current) {
       const localStorageCart = window.localStorage.getItem("ekart-cart");
+      const currency=window.localStorage.getItem("ekart-currency");
       if (localStorageCart) {
         setCart(JSON.parse(localStorageCart));
+      }
+      if(currency){
+        setCurrency(JSON.parse(currency))
       }
       isInitialMount.current = false;
     }
@@ -25,6 +30,12 @@ const Navbar = () => {
       window.localStorage.setItem("ekart-cart", JSON.stringify(cart));
     }
   }, [cart]);
+
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      window.localStorage.setItem("ekart-currency", JSON.stringify(currency));
+    }
+  }, [currency]);
   
 
   return (
