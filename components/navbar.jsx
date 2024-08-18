@@ -1,9 +1,32 @@
 "use client";
 import { useRouter } from "next/navigation"
 import Button from "./button"
+import { useRecoilState } from "recoil";
+import { cartState } from "@/states/state";
+import { useEffect, useRef } from "react";
 
 const Navbar = () => {
   const router= useRouter()
+  const [cart,setCart]=useRecoilState(cartState)
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      const localStorageCart = window.localStorage.getItem("ekart-cart");
+      if (localStorageCart) {
+        setCart(JSON.parse(localStorageCart));
+      }
+      isInitialMount.current = false;
+    }
+  }, [setCart]);
+
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      window.localStorage.setItem("ekart-cart", JSON.stringify(cart));
+    }
+  }, [cart]);
+  
+
   return (
     <div className={`flex justify-between items-center px-2 py-4 bg-black w-full`}>
         <div>

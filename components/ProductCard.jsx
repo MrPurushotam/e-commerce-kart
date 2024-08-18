@@ -55,7 +55,7 @@ const ProductCard = ({ product }) => {
                         className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     >
                         {Object.entries(currencyList)?.map(([key,symbol])=>(
-                            <option value={key} key={key} >{symbol}</option>
+                            <option value={symbol} key={key} >{symbol}</option>
                         ))}
                     </select>
                     <h2 className='text-gray-500 font-semibold text-lg ml-2'>${product.price.toFixed(2)}</h2>
@@ -68,7 +68,7 @@ const ProductCard = ({ product }) => {
             </p>
             <div className="w-full">
                 <Button
-                    className={`bg-yellow-400 text-xl font-semibold border-2 border-black rounded-md py-2 inline-block w-full hover:bg-yellow-500 ${isAdded ? 'tick-animation' : ''}`}
+                    className={`bg-yellow-400 text-xl font-semibold  rounded-md py-2 inline-block w-full hover:bg-yellow-500 ${isAdded ? 'tick-animation' : ''}`}
                     content={isAdded
                         ? <>✔ Added</>
                         : <>Add to Cart <i className="ph ph-shopping-cart text-xl ml-2"></i></>}

@@ -1,51 +1,66 @@
 "use client"
-import { productState } from "@/states/state"
-import { useEffect, useRef, useState } from "react";
+import { cartState, productState } from "@/states/state"
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import ProductCard from "@/components/ProductCard"
-import InputBox from "@/components/input";
+import Button from "@/components/button";
 export default function Home() {
-  const fetchData = useRef(true)
   const [products, setProducts] = useRecoilState(productState)
-  const [search,setSearch]=useState("")
-  async function fetchProductData() {
+  const [query,setQuery]=useState("")
+  const [categories,setCategories]=useState([])
+  
+  const getCategories=useCallback(async()=>{
     try {
-      console.log("fetching")
-      const resp = await fetch(`https://fakestoreapi.com/products`)
-      if (!resp.ok) {
-        console.log("Couldn't fetch.")
-        return
+      const resp=await fetch("https://fakestoreapi.com/products/categories")
+      if(resp.ok){
+        const temp=await resp.json()
+        setCategories(temp)
       }
-      const prod = await resp.json();
-      fetchData.current = false
-      setProducts(prod)
+      else{
+        console.log("Error occured while fetching")
+      }
     } catch (error) {
       console.log(error.message)
+      
     }
-  }
+  },[])
+
+  const fetchProductData = useCallback(async (queryParam = "") => {
+    try {
+      console.log("fetching products");
+      let url = "https://fakestoreapi.com/products/";
+      if (queryParam) {
+        url += `category/${queryParam}`;
+      }
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        console.log("Couldn't fetch products.");
+        return;
+      }
+      const prod = await resp.json();
+      setProducts(prod);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [setProducts]);
 
   useEffect(() => {
-    if (fetchData.current) {
-      fetchProductData()
-    }
-  }, [])
+    getCategories();
+    fetchProductData(query);
+  }, [query, fetchProductData]); 
+  
   return (
     <div className="text-base font-medium px-3 py-2 grid grid-cols-4 gap-4">
-      {/* Sidebar */}
       <div className="col-span-1">
-        {/* add search bar , categoreis options */}
         <div className="grid grid-rows-3 gap-2">
-          <div className="bg-gray-200 p-4 rounded-md">
-            <InputBox 
-            className={`w-full p-3 rounded-md text-base font-semibold autofocus`} 
-            placeholder={"Search Product, Catgeory"} 
-            onChange={(e)=>setSearch(e.target.value)}
-            
+          <div className="bg-gray-100 p-4 rounded-md space-x-1 space-y-1">
+            Select From categories
+            {categories?.map((c)=>(
+              <Button className={`font-semibold bg-gray-200 rounded-full border-2 border-gray-600 px-2 py-1 inline-block`} key={c} content={c} onClick={()=>setQuery(c)} />
+            ))
 
-            />
+            }
           </div>
-          <div className="bg-gray-200 p-4 rounded-md">Sidebar Item 2</div>
-          <div className="bg-gray-200 p-4 rounded-md">Sidebar Item 3</div>
         </div>
       </div>
   
